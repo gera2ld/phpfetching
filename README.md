@@ -9,7 +9,9 @@ Usage
 ``` php
 <?php
 include 'fetcher.php';
-$fetcher=new Fetcher();
+$fetcher=new Fetcher();	// do not use a cookie file
+$fetcher=new Fetcher('');	// use a temporary file as cookie file
+$fetcher=new Fetcher('cookiefile');	// use 'cookiefile' as cookie file
 
 // GET
 $g=$fetcher->load('http://www.google.com');

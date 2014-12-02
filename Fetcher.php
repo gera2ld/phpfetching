@@ -6,8 +6,10 @@ class Fetcher {
 	private $encoding='utf-8';	// encoding used in the module
 	private $cookiefile=null;
 	function __construct($cookiefile=null) {
-		if($cookiefile) $this->cookiefile=$cookiefile;
-		else $this->cookiefile=tempnam('.','COOKIE');
+		if($cookiefile)
+			$this->cookiefile=$cookiefile;
+		else if($cookiefile==='')
+			$this->cookiefile=tempnam('.','COOKIE');
 	}
 	public function save($fd, $data, $charset=null) {
 		if($charset)
@@ -23,8 +25,10 @@ class Fetcher {
 		curl_setopt($ch,CURLOPT_URL,$url);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($ch,CURLOPT_HEADER,false);	// do not return header
-		curl_setopt($ch,CURLOPT_COOKIEJAR,$this->cookiefile);
-		curl_setopt($ch,CURLOPT_COOKIEFILE,$this->cookiefile);
+		if($this->cookiefile) {
+			curl_setopt($ch,CURLOPT_COOKIEJAR,$this->cookiefile);
+			curl_setopt($ch,CURLOPT_COOKIEFILE,$this->cookiefile);
+		}
 		curl_setopt($ch,CURLOPT_POST,$data?1:0);
 		if($data)
 			curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
