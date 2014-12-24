@@ -3,7 +3,7 @@
  * Author: Gerald <gera2ld@163.com>
  */
 class Fetcher {
-	private $encoding='utf-8';	// encoding used in the module
+	protected $encoding='utf-8';	// encoding used in the module
 	private $cookiefile=null;
 	function __construct($cookiefile=null) {
 		if($cookiefile)
