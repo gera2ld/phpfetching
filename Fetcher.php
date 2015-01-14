@@ -14,7 +14,8 @@ class Fetcher {
 	public function save($fd, $data, $charset=null) {
 		if($charset)
 			$data=iconv($this->encoding,$charset.'//ignore',$data);
-		$f=fopen($fd,'w') or die('Error opening file: '.$fd);
+		$f=fopen($fd,'w');
+		if(!$f) throw new Exception('Error opening file: '.$fd);
 		fwrite($f,$data);
 		fclose($f);
 	}
@@ -50,4 +51,3 @@ class Fetcher {
 		return json_decode($g);
 	}
 }
-?>

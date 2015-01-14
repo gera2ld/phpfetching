@@ -25,5 +25,4 @@ $g=$fetcher->load('http://www.google.com',null,$kw);
 
 // output
 echo $g;
-?>
 ```
