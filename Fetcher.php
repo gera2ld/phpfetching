@@ -5,6 +5,7 @@
 class Fetcher {
 	protected $encoding='utf-8';	// encoding used in the module
 	private $cookiefile=null;
+	public $status=0;
 	function __construct($cookiefile=null) {
 		if($cookiefile)
 			$this->cookiefile=$cookiefile;
@@ -41,6 +42,7 @@ class Fetcher {
 		if(isset($kw['headers']))
 			curl_setopt($ch,CURLOPT_HTTPHEADER,$kw['headers']);
 		$g=curl_exec($ch);
+		$this->status=curl_getinfo($ch,CURLINFO_HTTP_CODE);
 		return $g;
 	}
 	public function load($url,$data=null,$kw=null) {
