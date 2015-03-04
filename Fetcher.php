@@ -34,7 +34,10 @@ class Fetcher {
 		curl_setopt($ch,CURLOPT_POST,$data?1:0);
 		if($data)
 			curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
-		curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.101 Safari/537.36 OPR/25.0.1614.50');
+		if(isset($kw['useragent']))
+			curl_setopt($ch,CURLOPT_USERAGENT,$kw['useragent']);
+		else
+			curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36 OPR/27.0.1689.76');
 		if(isset($kw['timeout']))
 			curl_setopt($ch,CURLOPT_TIMEOUT,$kw['timeout']);
 		elseif(isset($kw['timeout_ms']))
