@@ -57,6 +57,6 @@ class Fetcher {
 	}
 	public function load_json($url,$data=null,$kw=null) {
 		$g=$this->load($url,$data,$kw);
-		return json_decode($g);
+		return json_decode($g,true);
 	}
 }
