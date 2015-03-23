@@ -2,35 +2,33 @@
 /*
  * Author: Gerald <gera2ld@163.com>
  */
+namespace fetching;
+
 class Fetcher {
-	protected $encoding='utf-8';	// encoding used in the module
 	private $cookiefile=null;
-	public $status=0;
 	function __construct($cookiefile=null) {
 		if($cookiefile)
 			$this->cookiefile=$cookiefile;
 		else if($cookiefile==='')
 			$this->cookiefile=tempnam('.','COOKIE');
 	}
-	public function save($fd, $data, $charset=null) {
-		if($charset)
-			$data=iconv($this->encoding,$charset.'//ignore',$data);
-		$f=fopen($fd,'w');
-		if(!$f) throw new Exception('Error opening file: '.$fd);
-		fwrite($f,$data);
-		fclose($f);
-	}
-	public function load_binary($url,$data=null,$kw=null) {
+
+	public function fetch($url,$data=null,$kw=null) {
 		// $data can be array or string
 		// headers can be customized using $kw['headers']
 		$ch=curl_init();
 		curl_setopt($ch,CURLOPT_URL,$url);
+		curl_setopt($ch,CURLOPT_HEADER,1);
+		curl_setopt($ch,CURLOPT_NOBODY,0);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-		curl_setopt($ch,CURLOPT_HEADER,false);	// do not return header
+		$a=isset($kw['followlocation'])?$kw['followlocation']:1;
+		curl_setopt($ch,CURLOPT_FOLLOWLOCATION,$a);
 		if($this->cookiefile) {
 			curl_setopt($ch,CURLOPT_COOKIEJAR,$this->cookiefile);
 			curl_setopt($ch,CURLOPT_COOKIEFILE,$this->cookiefile);
 		}
+		// do not verify HTTPS
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);
 		curl_setopt($ch,CURLOPT_POST,$data?1:0);
 		if($data)
 			curl_setopt($ch,CURLOPT_POSTFIELDS,$data);
@@ -45,18 +43,6 @@ class Fetcher {
 		if(isset($kw['headers']))
 			curl_setopt($ch,CURLOPT_HTTPHEADER,$kw['headers']);
 		$g=curl_exec($ch);
-		$this->status=curl_getinfo($ch,CURLINFO_HTTP_CODE);
-		return $g;
-	}
-	public function load($url,$data=null,$kw=null) {
-		// if $kw['charset'] is set, $g is decoded using $kw['charset']
-		$g=$this->load_binary($url,$data,$kw);
-		if($kw&&isset($kw['charset']))
-			$g=iconv($kw['charset'],$this->encoding.'//ignore',$g);
-		return $g;
-	}
-	public function load_json($url,$data=null,$kw=null) {
-		$g=$this->load($url,$data,$kw);
-		return json_decode($g,true);
+		return new Response($ch,$g);
 	}
 }

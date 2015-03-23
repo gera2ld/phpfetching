@@ -4,25 +4,34 @@ Fetcher for PHP
 This is a simple web resource fetcher written in PHP,
 with cookies support.
 
+Requires PHP 5.3+.
+
+Also works with lower versions of PHP if namespace lines are removed.
+
 Usage
 ---
 ``` php
 <?php
-include 'fetcher.php';
+require 'fetching.php';
+use fetching\Fetcher;
+
 $fetcher=new Fetcher();	// do not use a cookie file
 $fetcher=new Fetcher('');	// use a temporary file as cookie file
 $fetcher=new Fetcher('cookiefile');	// use 'cookiefile' as cookie file
 
 // GET
-$g=$fetcher->load('http://www.google.com');
+$res=$fetcher->fetch('http://www.google.com');
 
 // POST
-$g=$fetcher->load('http://www.google.com','data');
+$res=$fetcher->fetch('http://www.google.com','data');
 
-// specify charset
-$kw=array('charset'=>'utf-8');
-$g=$fetcher->load('http://www.google.com',null,$kw);
-
-// output
-echo $g;
+// Output
+// * binary
+echo $res->raw();
+// * text
+echo $res->text();
+echo $res->text(charset='utf-8');
+// * json
+echo $res->json();
+echo $res->json(charset='utf-8');
 ```
