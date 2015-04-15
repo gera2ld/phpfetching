@@ -3,6 +3,7 @@
  * Author: Gerald <gera2ld@163.com>
  */
 namespace fetching;
+require __DIR__.'/Response.php';
 
 class Fetcher {
 	private $cookiefile=null;

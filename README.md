@@ -12,7 +12,7 @@ Usage
 ---
 ``` php
 <?php
-require 'fetching.php';
+require 'fetching/Fetcher.php';
 use fetching\Fetcher;
 
 $fetcher=new Fetcher();	// do not use a cookie file

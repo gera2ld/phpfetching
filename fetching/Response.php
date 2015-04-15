@@ -37,6 +37,9 @@ class Response {
 		fwrite($f,$data);
 		fclose($f);
 	}
+	public function dumpSelf($fd) {
+		self::dump($fd,$this->binary);
+	}
 	public function getHeaders($key){
 		$key=strtolower($key);
 		if(isset($this->headers[$key])) return $this->headers[$key];
