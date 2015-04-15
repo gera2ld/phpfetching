@@ -6,8 +6,7 @@ namespace fetching;
 
 class Response {
 	protected $encoding='utf-8';	// encoding used in the module
-	private $headers;
-	public $status,$binary,$first_line;
+	private $headers,$status,$binary,$first_line;
 	function __construct($ch,$bin){
 		$this->status=curl_getinfo($ch,CURLINFO_HTTP_CODE);
 		$hs=curl_getinfo($ch,CURLINFO_HEADER_SIZE);
@@ -39,6 +38,12 @@ class Response {
 	}
 	public function dumpSelf($fd) {
 		self::dump($fd,$this->binary);
+	}
+	public function getStatus() {
+		return $this->status;
+	}
+	public function getFirstLine() {
+		return $this->first_line;
 	}
 	public function getHeaders($key){
 		$key=strtolower($key);
