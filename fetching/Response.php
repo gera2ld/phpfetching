@@ -7,19 +7,28 @@ namespace fetching;
 class Response {
 	public $encoding='utf-8';
 	private $headers,$status,$binary,$first_line,$final_url;
+	private $error;
 
 	public function __construct($ch,$bin){
 		$this->status=curl_getinfo($ch,CURLINFO_HTTP_CODE);
 		$this->final_url=curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
+		$this->headers=array();
+		$this->first_line='';
 		$hs=curl_getinfo($ch,CURLINFO_HEADER_SIZE);
-		$this->binary=substr($bin,$hs);
-		$this->parseHeaders(substr($bin,0,$hs));
+		if($hs) {
+			$this->binary=substr($bin,$hs);
+			$this->parseHeaders(substr($bin,0,$hs));
+		}
+		$error=curl_errno($ch);
+		$this->error=$error?array(
+			'code'=>$error,
+			'message'=>curl_error($ch),
+		):null;
 	}
 
 	private function parseHeaders($h){
 		$h=explode("\r\n\r\n",$h);
 		$h=$h[count($h)-2];
-		$this->headers=array();
 		$this->first_line=strtok($h,"\r\n");
 		while(1){
 			$line=strtok("\r\n");
@@ -72,6 +81,8 @@ class Response {
 			return $g;
 		case 'url':
 			return $this->final_url;
+		case 'error':
+			return $this->error;
 		}
 	}
 
