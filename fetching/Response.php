@@ -5,14 +5,17 @@
 namespace fetching;
 
 class Response {
-	protected $encoding='utf-8';	// encoding used in the module
-	private $headers,$status,$binary,$first_line;
-	function __construct($ch,$bin){
+	public $encoding='utf-8';
+	private $headers,$status,$binary,$first_line,$final_url;
+
+	public function __construct($ch,$bin){
 		$this->status=curl_getinfo($ch,CURLINFO_HTTP_CODE);
+		$this->final_url=curl_getinfo($ch,CURLINFO_EFFECTIVE_URL);
 		$hs=curl_getinfo($ch,CURLINFO_HEADER_SIZE);
 		$this->binary=substr($bin,$hs);
 		$this->parseHeaders(substr($bin,0,$hs));
 	}
+
 	private function parseHeaders($h){
 		$h=explode("\r\n\r\n",$h);
 		$h=$h[count($h)-2];
@@ -30,41 +33,49 @@ class Response {
 				$this->headers[$key]=array($val);
 		}
 	}
+
 	public static function dump($fd, $data) {
 		$f=fopen($fd,'w');
 		if(!$f) throw new Exception('Error opening file: '.$fd);
 		fwrite($f,$data);
 		fclose($f);
 	}
+
 	public function dumpSelf($fd) {
 		self::dump($fd,$this->binary);
 	}
-	public function getStatus() {
-		return $this->status;
-	}
+
 	public function getFirstLine() {
 		return $this->first_line;
 	}
+
 	public function getHeaders($key){
 		$key=strtolower($key);
 		if(isset($this->headers[$key])) return $this->headers[$key];
 		else return array();
 	}
+
 	public function getHeader($key){
 		$val=$this->getHeaders($key);
 		if(count($val)) return $val[0];
 	}
-	public function raw() {
-		return $this->binary;
+
+	public function __get($key) {
+		switch($key) {
+		case 'status':
+			return $this->status;
+		case 'content':
+			return $this->binary;
+		case 'text':
+			$g=$this->binary;
+			$g=iconv($this->encoding,'utf-8//ignore',$g);
+			return $g;
+		case 'url':
+			return $this->final_url;
+		}
 	}
-	public function text($charset=null) {
-		$g=$this->raw();
-		if($charset)
-			$g=iconv($charset,$this->encoding.'//ignore',$g);
-		return $g;
-	}
-	public function json($charset=null) {
-		$g=$this->text($charset);
-		return json_decode($g,true);
+
+	public function json($toArray=false) {
+		return json_decode($this->text,$toArray);
 	}
 }

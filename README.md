@@ -25,13 +25,25 @@ $res=$fetcher->fetch('http://www.google.com');
 // POST
 $res=$fetcher->fetch('http://www.google.com','data');
 
-// Output
+// **Output**
+// * status code
+echo $res->status;
+
+// * final url
+echo $res->url;
+
 // * binary
-echo $res->raw();
+echo $res->content;
+
 // * text
-echo $res->text();
-echo $res->text(charset='utf-8');
+// default encoding is 'utf-8'
+echo $res->text;
+
+// * text: change encoding
+$res->encoding='gbk';
+echo $res->text;
+
 // * json
-echo $res->json();
-echo $res->json(charset='utf-8');
+echo $res->json();	// returns an object
+echo $res->json(true);	// returns an array
 ```
