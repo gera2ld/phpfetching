@@ -4,7 +4,7 @@ Fetcher for PHP
 This is a simple web resource fetcher written in PHP,
 with cookies support.
 
-Requires PHP 5.3+.
+Requires PHP 5.3+. File uploading requires PHP 5.5+.
 
 Also works with lower versions of PHP if namespace lines are removed.
 
@@ -12,8 +12,8 @@ Usage
 ---
 ``` php
 <?php
-require 'fetching/Fetcher.php';
-use fetching\Fetcher;
+require 'Fetching/Fetcher.php';
+use Gera2ld\Fetching\Fetcher;
 
 $fetcher=new Fetcher();	// do not use a cookie file
 $fetcher=new Fetcher('');	// use a temporary file as cookie file
