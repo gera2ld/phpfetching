@@ -1,6 +1,6 @@
-<?php require __DIR__.'/../fetching/Fetcher.php';
+<?php require __DIR__.'/../Fetching/Fetcher.php';
 
-$fetcher=new fetching\Fetcher();
+$fetcher=new Gera2ld\Fetching\Fetcher();
 $res=$fetcher->fetch('http://www.baidu.com');
 
 var_dump($res->status);
